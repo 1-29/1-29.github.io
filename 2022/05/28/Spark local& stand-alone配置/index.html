@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+
+  
+  <title>Spark HA &amp; Yarn配置 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="五、Spark（local）1、将Anaconda3文件上传到&#x2F;export&#x2F;server&#x2F;路径下，执行这个文件，将Anaconda3安装到&#x2F;export&#x2F;server&#x2F;路径下，看到base开头证明安装成功 (base) [root@node1 server]#  2、配置&#x2F;root&#x2F;路径下.condarc文件 channels:    defaultsshow_channel_urls: tru">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark HA &amp; Yarn配置">
+<meta property="og:url" content="http://example.com/2022/05/28/Spark%20local&%20stand-alone%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="五、Spark（local）1、将Anaconda3文件上传到&#x2F;export&#x2F;server&#x2F;路径下，执行这个文件，将Anaconda3安装到&#x2F;export&#x2F;server&#x2F;路径下，看到base开头证明安装成功 (base) [root@node1 server]#  2、配置&#x2F;root&#x2F;路径下.condarc文件 channels:    defaultsshow_channel_urls: tru">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2022/05/28/images/%E5%9B%BE%E7%89%87.png">
+<meta property="og:image" content="http://example.com/2022/05/28/images/%E5%9B%BE%E7%89%873.png">
+<meta property="og:image" content="http://example.com/2022/05/28/images/%E5%9B%BE%E7%89%874.png">
+<meta property="og:image" content="http://example.com/2022/05/28/images/%E5%9B%BE%E7%89%875.png">
+<meta property="article:published_time" content="2022-05-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-05-28T10:23:00.389Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2022/05/28/images/%E5%9B%BE%E7%89%87.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Spark local&amp; stand-alone配置" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2022/05/28/Spark%20local&%20stand-alone%E9%85%8D%E7%BD%AE/" class="article-date">
+  <time datetime="2022-05-27T16:00:00.000Z" itemprop="datePublished">2022-05-28</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Spark HA &amp; Yarn配置
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="五、Spark（local）"><a href="#五、Spark（local）" class="headerlink" title="五、Spark（local）"></a>五、Spark（local）</h1><h3 id="1、将Anaconda3文件上传到-export-server-路径下，执行这个文件，将Anaconda3安装到-export-server-路径下，看到base开头证明安装成功"><a href="#1、将Anaconda3文件上传到-export-server-路径下，执行这个文件，将Anaconda3安装到-export-server-路径下，看到base开头证明安装成功" class="headerlink" title="1、将Anaconda3文件上传到/export/server/路径下，执行这个文件，将Anaconda3安装到/export/server/路径下，看到base开头证明安装成功"></a>1、将Anaconda3文件上传到/export/server/路径下，执行这个文件，将Anaconda3安装到/export/server/路径下，看到base开头证明安装成功</h3><blockquote>
+<p>(base) [root@node1 server]#</p>
+</blockquote>
+<h3 id="2、配置-root-路径下-condarc文件"><a href="#2、配置-root-路径下-condarc文件" class="headerlink" title="2、配置/root/路径下.condarc文件"></a>2、配置/root/路径下.condarc文件</h3><blockquote>
+<p>channels:  </p>
+<ul>
+<li>defaults<br>show_channel_urls: true<br>default_channels:  </li>
+<li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main">https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main</a>  </li>
+<li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r">https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/r</a>  </li>
+<li><a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2">https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/msys2</a><br>custom_channels:<br>conda-forge: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud">https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</a><br>msys2: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud">https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</a><br>bioconda: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud">https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</a><br>menpo: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud">https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</a><br>pytorch: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud">https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</a><br>simpleitk: <a target="_blank" rel="noopener" href="https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud">https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud</a></li>
+</ul>
+</blockquote>
+<h3 id="3、创建虚拟环境pyspark，基于Python-3-8-：conda-create-n-pyspark-python-3-8"><a href="#3、创建虚拟环境pyspark，基于Python-3-8-：conda-create-n-pyspark-python-3-8" class="headerlink" title="3、创建虚拟环境pyspark，基于Python 3.8 ：conda create -n pyspark python=3.8"></a>3、创建虚拟环境pyspark，基于Python 3.8 ：conda create -n pyspark python=3.8</h3><h3 id="4、切换到虚拟环境内"><a href="#4、切换到虚拟环境内" class="headerlink" title="4、切换到虚拟环境内"></a>4、切换到虚拟环境内</h3><blockquote>
+<p>(base) [root@node1 ~]# conda activate pyspark<br>您在 /var/spool/mail/root 中有新邮件<br>(pyspark) [root@node1 ~]#</p>
+</blockquote>
+<h3 id="5、在虚拟环境内安装包：pip-install-pyhive-pyspark-jieba-i-https-pypi-tuna-tsinghua-edu-cn-simple"><a href="#5、在虚拟环境内安装包：pip-install-pyhive-pyspark-jieba-i-https-pypi-tuna-tsinghua-edu-cn-simple" class="headerlink" title="5、在虚拟环境内安装包：pip install pyhive pyspark jieba -i https://pypi.tuna.tsinghua.edu.cn/simple"></a>5、在虚拟环境内安装包：pip install pyhive pyspark jieba -i <a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple</a></h3><h3 id="6、将spark压缩包上传到-export-server-路径下，解压后删除压缩包，并设计软连接"><a href="#6、将spark压缩包上传到-export-server-路径下，解压后删除压缩包，并设计软连接" class="headerlink" title="6、将spark压缩包上传到/export/server/路径下，解压后删除压缩包，并设计软连接"></a>6、将spark压缩包上传到/export/server/路径下，解压后删除压缩包，并设计软连接</h3><blockquote>
+<p>lrwxrwxrwx  1 root  root         40 3月  15 15:35 spark -&gt; /export/server/spark-3.2.0-bin-hadoop3.2<br>drwxr-xr-x 15  1000  1000       235 3月  22 16:08 spark-3.2.0-bin-hadoop3.2  </p>
+</blockquote>
+<h3 id="7、配置环境变量，加载环境变量"><a href="#7、配置环境变量，加载环境变量" class="headerlink" title="7、配置环境变量，加载环境变量"></a>7、配置环境变量，加载环境变量</h3><blockquote>
+<p>#JAVA_HOME<br>export JAVA_HOME=/export/server/jdk1.8.0_241<br>export PATH=$PATH:$JAVA_HOME/bin<br>export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar<br>#HADOOP_HOME<br>export HADOOP_HOME=/export/server/hadoop-3.3.0<br>export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin  </p>
+</blockquote>
+<blockquote>
+<p>#SPARK_HOME<br>export SPARK_HOME=/export/server/spark<br>#HADOOP_CONF_DIR<br>export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop<br>#PYSPARK_PYTHON<br>export PYSPARK_PYTHON=/export/server/anaconda3/envs/pyspark/bin/python</p>
+</blockquote>
+<h3 id="8、配置-root-路径下-bashrc文件"><a href="#8、配置-root-路径下-bashrc文件" class="headerlink" title="8、配置/root/路径下.bashrc文件"></a>8、配置/root/路径下.bashrc文件</h3><blockquote>
+<p>#JAVA_HOME<br>export JAVA_HOME=/export/server/jdk1.8.0_241<br>#PYSPARK_PYTHON<br>export PYSPARK_PYTHON=/export/server/anaconda3/envs/pyspark/bin/python</p>
+</blockquote>
+<h3 id="9、进入-export-server-anaconda3-envs-pyspark-bin-路径下进行测试"><a href="#9、进入-export-server-anaconda3-envs-pyspark-bin-路径下进行测试" class="headerlink" title="9、进入/export/server/anaconda3/envs/pyspark/bin/路径下进行测试"></a>9、进入/export/server/anaconda3/envs/pyspark/bin/路径下进行测试</h3><p><img src="../images/%E5%9B%BE%E7%89%87.png"></p>
+<h3 id="10、查看web-UI页面"><a href="#10、查看web-UI页面" class="headerlink" title="10、查看web UI页面"></a>10、查看web UI页面</h3><p><img src="../images/%E5%9B%BE%E7%89%873.png"></p>
+<h1 id="六、Spark（Stand-alone）"><a href="#六、Spark（Stand-alone）" class="headerlink" title="六、Spark（Stand alone）"></a>六、Spark（Stand alone）</h1><h3 id="1、使用scp拷贝Anacanda文件、-condarc、-bashrc和环境变量到node2-node3上"><a href="#1、使用scp拷贝Anacanda文件、-condarc、-bashrc和环境变量到node2-node3上" class="headerlink" title="1、使用scp拷贝Anacanda文件、.condarc、.bashrc和环境变量到node2,node3上"></a>1、使用scp拷贝Anacanda文件、.condarc、.bashrc和环境变量到node2,node3上</h3><h4 id="（1）、创建虚拟环境pyspark，基于Python-3-8-：conda-create-n-pyspark-python-3-8"><a href="#（1）、创建虚拟环境pyspark，基于Python-3-8-：conda-create-n-pyspark-python-3-8" class="headerlink" title="（1）、创建虚拟环境pyspark，基于Python 3.8 ：conda create -n pyspark python=3.8"></a>（1）、创建虚拟环境pyspark，基于Python 3.8 ：conda create -n pyspark python=3.8</h4><h4 id="（2）、切换到虚拟环境内"><a href="#（2）、切换到虚拟环境内" class="headerlink" title="（2）、切换到虚拟环境内"></a>（2）、切换到虚拟环境内</h4><blockquote>
+<p>(base) [root@node1 ~]# conda activate pyspark<br>您在 /var/spool/mail/root 中有新邮件<br>(pyspark) [root@node1 ~]#</p>
+</blockquote>
+<h4 id="（3）、在虚拟环境内安装包：pip-install-pyhive-pyspark-jieba-i-https-pypi-tuna-tsinghua-edu-cn-simple"><a href="#（3）、在虚拟环境内安装包：pip-install-pyhive-pyspark-jieba-i-https-pypi-tuna-tsinghua-edu-cn-simple" class="headerlink" title="（3）、在虚拟环境内安装包：pip install pyhive pyspark jieba -i https://pypi.tuna.tsinghua.edu.cn/simple"></a>（3）、在虚拟环境内安装包：pip install pyhive pyspark jieba -i <a target="_blank" rel="noopener" href="https://pypi.tuna.tsinghua.edu.cn/simple">https://pypi.tuna.tsinghua.edu.cn/simple</a></h4><h3 id="2、将workers-template改名为workers，并配置内容"><a href="#2、将workers-template改名为workers，并配置内容" class="headerlink" title="2、将workers.template改名为workers，并配置内容"></a>2、将workers.template改名为workers，并配置内容</h3><blockquote>
+<p><algorithm># A Spark Worker will be started on each of the machines listed below.<br>node1<br>node2<br>node3</p>
+</blockquote>
+<h3 id="3、将spark-env-sh-template改名为spark-env-sh，并配置内容"><a href="#3、将spark-env-sh-template改名为spark-env-sh，并配置内容" class="headerlink" title="3、将spark-env.sh.template改名为spark-env.sh，并配置内容"></a>3、将spark-env.sh.template改名为spark-env.sh，并配置内容</h3><blockquote>
+<p><algorithm>## 设置JAVA安装目录<br>JAVA_HOME=/export/server/jdk  </p>
+<p><algorithm>## HADOOP软件配置文件目录，读取HDFS上文件和运行YARN集群<br>HADOOP_CONF_DIR=/export/server/hadoop/etc/hadoop<br>YARN_CONF_DIR=/export/server/hadoop/etc/hadoop  </p>
+<p><algorithm>## 指定spark老大Master的IP和提交任务的通信端口<br><algorithm># 告知Spark的master运行在哪个机器上<br>#export SPARK_MASTER_HOST=node1<br><algorithm># 告知sparkmaster的通讯端口<br>export SPARK_MASTER_PORT=7077<br><algorithm># 告知spark master的 webui端口<br>SPARK_MASTER_WEBUI_PORT=8080  </p>
+<p><algorithm># worker cpu可用核数<br>SPARK_WORKER_CORES=1<br><algorithm># worker可用内存<br>SPARK_WORKER_MEMORY=1g<br><algorithm># worker的工作通讯地址<br>SPARK_WORKER_PORT=7078<br><algorithm># worker的 webui地址<br>SPARK_WORKER_WEBUI_PORT=8081  </p>
+<p><algorithm>## 设置历史服务器<br><algorithm># 配置的意思是  将spark程序运行的历史日志 存到hdfs的/sparklog文件夹中<br>SPARK_HISTORY_OPTS=”-Dspark.history.fs.logDirectory=hdfs://node1:8020/sparklog/ -Dspark.history.fs.cleaner.enabled=true”</p>
+</blockquote>
+<h3 id="4、Hadoop集群打开，将spark日志路径、权限上传到HDFS上：hadoop-fs-mkdir-sparklog"><a href="#4、Hadoop集群打开，将spark日志路径、权限上传到HDFS上：hadoop-fs-mkdir-sparklog" class="headerlink" title="4、Hadoop集群打开，将spark日志路径、权限上传到HDFS上：hadoop fs -mkdir /sparklog"></a>4、Hadoop集群打开，将spark日志路径、权限上传到HDFS上：hadoop fs -mkdir /sparklog</h3><blockquote>
+<p>hadoop fs -chmod 777 /sparklog</p>
+</blockquote>
+<h3 id="5、将spark-defaults-conf-sh-template改名为spark-defaults-conf，并配置内容"><a href="#5、将spark-defaults-conf-sh-template改名为spark-defaults-conf，并配置内容" class="headerlink" title="5、将spark-defaults.conf.sh.template改名为spark-defaults.conf，并配置内容"></a>5、将spark-defaults.conf.sh.template改名为spark-defaults.conf，并配置内容</h3><blockquote>
+<p><algorithm># 开启spark的日期记录功能<br>spark.eventLog.enabled         true<br><algorithm># 设置spark日志记录的路径<br>spark.eventLog.dir         hdfs://node1:8020/sparklog/<br><algorithm># 设置spark日志是否启动压缩<br>spark.eventLog.compress        true</p>
+</blockquote>
+<h3 id="6、将log4j-properties-template改名为log4j-properties，并配置内容"><a href="#6、将log4j-properties-template改名为log4j-properties，并配置内容" class="headerlink" title="6、将log4j.properties.template改名为log4j.properties，并配置内容"></a>6、将log4j.properties.template改名为log4j.properties，并配置内容</h3><blockquote>
+<p>log4j.rootCategory=WARN, console<br>log4j.appender.console=org.apache.log4j.ConsoleAppender<br>log4j.appender.console.target=System.err<br>log4j.appender.console.layout=org.apache.log4j.PatternLayout<br>log4j.appender.console.layout.ConversionPattern=%d{yy/MM/dd HH:mm:ss} %p %c{1}: %m%n</p>
+</blockquote>
+<h3 id="7、使用scp拷贝spark到node2-node3上"><a href="#7、使用scp拷贝spark到node2-node3上" class="headerlink" title="7、使用scp拷贝spark到node2,node3上"></a>7、使用scp拷贝spark到node2,node3上</h3><h3 id="8、在node2、node3上给spark安装目录增加软连接"><a href="#8、在node2、node3上给spark安装目录增加软连接" class="headerlink" title="8、在node2、node3上给spark安装目录增加软连接"></a>8、在node2、node3上给spark安装目录增加软连接</h3><h3 id="9、启动历史服务器-export-server-spark-sbin-start-history-server-sh"><a href="#9、启动历史服务器-export-server-spark-sbin-start-history-server-sh" class="headerlink" title="9、启动历史服务器/export/server/spark/sbin/start-history-server.sh"></a>9、启动历史服务器/export/server/spark/sbin/start-history-server.sh</h3><blockquote>
+<p>(base) [root@node1 server]# jps<br>69494 DataNode<br>70534 ResourceManager<br>70934 NodeManager<br>67992 NameNode<br>72075 Jps<br>71402 HistoryServer</p>
+</blockquote>
+<h3 id="10、启动spark的master和worker进程：sbin-start-all-sh"><a href="#10、启动spark的master和worker进程：sbin-start-all-sh" class="headerlink" title="10、启动spark的master和worker进程：sbin/start-all.sh"></a>10、启动spark的master和worker进程：sbin/start-all.sh</h3><blockquote>
+<p>(base) [root@node1 server]# jps<br>75877 Master<br>76372 Jps<br>69494 DataNode<br>70534 ResourceManager<br>70934 NodeManager<br>67992 NameNode<br>71402 HistoryServer<br>76093 Worker</p>
+</blockquote>
+<h3 id="11、查看spark-web-UI页面（8080）、历史服务器web-UI页面（18080）"><a href="#11、查看spark-web-UI页面（8080）、历史服务器web-UI页面（18080）" class="headerlink" title="11、查看spark web UI页面（8080）、历史服务器web UI页面（18080）"></a>11、查看spark web UI页面（8080）、历史服务器web UI页面（18080）</h3><p><img src="../images/%E5%9B%BE%E7%89%874.png"><br><img src="../images/%E5%9B%BE%E7%89%875.png"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/05/28/Spark%20local&%20stand-alone%E9%85%8D%E7%BD%AE/" data-id="cl3pra9aa0002ggteg82d1shq" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/05/28/Spark%20HA%20&%20Yarn%E9%85%8D%E7%BD%AE/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Spark HA &amp; Yarn配置
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/05/28/Spark%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Spark HA &amp; Yarn配置</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/05/">May 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/05/28/hello-world/">Hello World</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/28/Spark%20HA%20&%20Yarn%E9%85%8D%E7%BD%AE/">Spark HA &amp; Yarn配置</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/28/Spark%20local&%20stand-alone%E9%85%8D%E7%BD%AE/">Spark HA &amp; Yarn配置</a>
+          </li>
+        
+          <li>
+            <a href="/2022/05/28/Spark%E5%9F%BA%E7%A1%80%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">Spark HA &amp; Yarn配置</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2022 John Doe<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+
+  
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+  </div>
+</body>
+</html>
